@@ -18,6 +18,9 @@ jobs:
       with:
         go-version: 1.13
 
+    - name: Set Up Containers
+      run: docker run --name kafka --rm -d -p 2181:2181 -p 9092:9092 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 obsidiandynamics/kafka
+
     - name: Build & Test
       run: make
 
