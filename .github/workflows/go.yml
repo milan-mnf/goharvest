@@ -25,11 +25,9 @@ jobs:
 
     - name: Debug Docker/Kafka
       run: |
-        echo 'exit' | telnet localhost 9092
-        echo 'exit' | telnet 127.0.0.1 9092
-        echo 'exit' | telnet kafka 9092
-        echo 'exit' | telnet kafka 29092
-        echo 'exit' | telnet localhost 5432
+        echo 'exit' | telnet kafka 9092       
+        echo 'exit' | telnet kafka 29092      
+        echo 'exit' | telnet localhost 5432   
 
     - name: Go Get
       run: go get -u -v all
