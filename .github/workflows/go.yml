@@ -20,11 +20,14 @@ jobs:
           go-version: 1.13
 
       - name: Set Up Env
-        run: echo "LOCAL_HOST=$(ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -1)" >> $GITHUB_ENV
+        run: |
+          echo "LOCAL_HOST=$(ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -1)" >> $GITHUB_ENV
+          echo LOCAL_HOST $LOCAL_HOST
+          cd ./.github/workflows/docker
+          LOCAL_HOST=${LOCAL_HOST} docker-compose config
 
       - name: Set Up Containers
         run: |
-          LOCAL_HOST=${LOCAL_HOST} docker-compose config -f ./.github/workflows/docker/docker-compose.yml
           LOCAL_HOST=${LOCAL_HOST} docker-compose -f ./.github/workflows/docker/docker-compose.yml up -d
           docker ps -a
 
