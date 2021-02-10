@@ -7,31 +7,30 @@ on:
     branches: [ master ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
+    env:
+      LOCAL_HOST: $()
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.13
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.13
 
-    - name: Set Up Containers
-      run: |
-        docker-compose -f ./.github/workflows/docker/docker-compose.yml up -d
-        docker ps -a
+      - name: Set Up Containers
+        run: |
+          docker-compose -f ./.github/workflows/docker/docker-compose.yml up -d
+          docker ps -a
+          ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -1 >> $LOCAL_HOST
+          echo $LOCAL_HOST
 
-    - name: Debug Docker/Kafka
-      run: |
-        echo 'exit' | telnet localhost 9092
+      - name: Go Get
+        run: go get -u -v all
 
-    - name: Go Get
-      run: go get -u -v all
+      - name: Build & Test
+        run: make
 
-    - name: Build & Test
-      run: make
-
-    - name: Integration Test
-      run: make int
+      - name: Integration Test
+        run: make int
