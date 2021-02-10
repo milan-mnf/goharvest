@@ -41,7 +41,6 @@ const (
 	leaderTopic                   = kafkaNamespace + ".neli"
 	leaderGroupID                 = kafkaNamespace + ".group"
 	receiverGroupID               = kafkaNamespace + ".receiver_group"
-	bootstrapServers              = "localhost:9092"
 	dataSource                    = "host=localhost port=5432 user=postgres password= dbname=postgres sslmode=disable"
 	generateInterval              = 5 * time.Millisecond
 	generateRecordsPerTxn         = 20
@@ -50,6 +49,10 @@ const (
 	receiverPollDuration          = 500 * time.Millisecond
 	receiverNoMessagesWarningTime = 10 * time.Second
 	waitTimeout                   = 90 * time.Second
+)
+
+var (
+	bootstrapServers = fmt.Sprintf("%s:9092", os.Getenv("LOCAL_HOST"))
 )
 
 var logger = overlog.New(overlog.StandardFormat())
