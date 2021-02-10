@@ -25,7 +25,6 @@ jobs:
 
     - name: Debug Docker/Kafka
       run: |
-        echo 'exit' | telnet kafka 9092       
         echo 'exit' | telnet kafka 29092      
         echo 'exit' | telnet localhost 5432   
 
