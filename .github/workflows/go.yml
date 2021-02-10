@@ -27,7 +27,13 @@ jobs:
       run: go get -u -v all
 
     - name: Build & Test
-      run: make
+      run: |
+        make
+        telnet localhost 9092
+        telnet 127.0.0.1 9092
+        telnet kafka 9092
+        telnet kafka 29092
+        telnet localhost 5432
 
     - name: Integration Test
       run: make int
