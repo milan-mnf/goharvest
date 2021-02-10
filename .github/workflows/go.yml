@@ -20,8 +20,10 @@ jobs:
           go-version: 1.13
 
       - name: Set Up Env
+        run: echo "LOCAL_HOST=$(ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -1)" >> $GITHUB_ENV
+
+      - name: Validate Env
         run: |
-          echo "LOCAL_HOST=$(ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -1)" >> $GITHUB_ENV
           echo LOCAL_HOST $LOCAL_HOST
           cd ./.github/workflows/docker
           LOCAL_HOST=${LOCAL_HOST} docker-compose config
