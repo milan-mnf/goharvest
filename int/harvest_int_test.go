@@ -56,6 +56,30 @@ var logger = overlog.New(overlog.StandardFormat())
 var scr = scribe.New(overlog.Bind(logger))
 
 func openExternals() externals {
+	db, err := sql.Open("postgres", dataSource)
+	if err != nil {
+		panic(err)
+	}
+
+	const ddlTemplate = `
+		CREATE SCHEMA IF NOT EXISTS %s;
+		DROP TABLE IF EXISTS %s;
+		CREATE TABLE %s (
+			id                  BIGSERIAL PRIMARY KEY,
+			create_time         TIMESTAMP WITH TIME ZONE NOT NULL,
+			kafka_topic         VARCHAR(249) NOT NULL,
+			kafka_key           VARCHAR(5) NOT NULL,
+			kafka_value         VARCHAR(50),
+			kafka_header_keys   TEXT[] NOT NULL,
+			kafka_header_values TEXT[] NOT NULL,
+			leader_id           UUID
+		)
+	`
+	_, err = db.Exec(fmt.Sprintf(ddlTemplate, dbSchema, outboxTable, outboxTable))
+	if err != nil {
+		panic(err)
+	}
+
 	cons, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers":  bootstrapServers,
 		"group.id":           receiverGroupID,
@@ -95,30 +119,6 @@ func openExternals() externals {
 			}
 			break
 		}
-	}
-
-	db, err := sql.Open("postgres", dataSource)
-	if err != nil {
-		panic(err)
-	}
-
-	const ddlTemplate = `
-		CREATE SCHEMA IF NOT EXISTS %s;
-		DROP TABLE IF EXISTS %s;
-		CREATE TABLE %s (
-			id                  BIGSERIAL PRIMARY KEY,
-			create_time         TIMESTAMP WITH TIME ZONE NOT NULL,
-			kafka_topic         VARCHAR(249) NOT NULL,
-			kafka_key           VARCHAR(5) NOT NULL,
-			kafka_value         VARCHAR(50),
-			kafka_header_keys   TEXT[] NOT NULL,
-			kafka_header_values TEXT[] NOT NULL,
-			leader_id           UUID
-		)
-	`
-	_, err = db.Exec(fmt.Sprintf(ddlTemplate, dbSchema, outboxTable, outboxTable))
-	if err != nil {
-		panic(err)
 	}
 
 	return externals{cons, admin, db}
