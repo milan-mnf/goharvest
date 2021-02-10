@@ -41,7 +41,7 @@ const (
 	leaderTopic                   = kafkaNamespace + ".neli"
 	leaderGroupID                 = kafkaNamespace + ".group"
 	receiverGroupID               = kafkaNamespace + ".receiver_group"
-	bootstrapServers              = "127.0.0.1:9092"
+	bootstrapServers              = "localhost:9092"
 	dataSource                    = "host=localhost port=5432 user=postgres password= dbname=postgres sslmode=disable"
 	generateInterval              = 5 * time.Millisecond
 	generateRecordsPerTxn         = 20
