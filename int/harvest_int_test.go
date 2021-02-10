@@ -63,6 +63,8 @@ func openExternals() externals {
 		"auto.offset.reset":  "earliest",
 		"socket.timeout.ms":  10000,
 		// "debug":              "all",
+		// necessary to avoid IPv6 issues when running as github action
+		"broker.address.family": "v4",
 	})
 	if err != nil {
 		panic(err)
