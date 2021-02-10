@@ -24,7 +24,7 @@ jobs:
 
       - name: Set Up Containers
         run: |
-          docker-compose config
+          LOCAL_HOST=${LOCAL_HOST} docker-compose config -f ./.github/workflows/docker/docker-compose.yml
           LOCAL_HOST=${LOCAL_HOST} docker-compose -f ./.github/workflows/docker/docker-compose.yml up -d
           docker ps -a
 
