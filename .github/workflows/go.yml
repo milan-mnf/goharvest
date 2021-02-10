@@ -23,17 +23,19 @@ jobs:
         docker-compose -f ./.github/workflows/docker/docker-compose.yml up -d
         docker ps -a
 
+    - name: Debug Docker/Kafka
+      run: |
+        echo 'exit' | telnet localhost 9092
+        echo 'exit' | telnet 127.0.0.1 9092
+        echo 'exit' | telnet kafka 9092
+        echo 'exit' | telnet kafka 29092
+        echo 'exit' | telnet localhost 5432
+
     - name: Go Get
       run: go get -u -v all
 
     - name: Build & Test
-      run: |
-        make
-        telnet localhost 9092
-        telnet 127.0.0.1 9092
-        telnet kafka 9092
-        telnet kafka 29092
-        telnet localhost 5432
+      run: make
 
     - name: Integration Test
       run: make int
