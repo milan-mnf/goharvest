@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      LOCAL_HOST: $()
+      LOCAL_HOST: ""
     steps:
       - uses: actions/checkout@v2
 
@@ -23,8 +23,10 @@ jobs:
         run: |
           docker-compose -f ./.github/workflows/docker/docker-compose.yml up -d
           docker ps -a
-          ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -1 >> $LOCAL_HOST
-          echo $LOCAL_HOST
+          echo "LOCAL_HOST=$(ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}' | head -1)" >> $GITHUB_ENV
+
+      - name: Set Up Containers
+        run: echo LOCAL_HOST $LOCAL_HOST
 
       - name: Go Get
         run: go get -u -v all
